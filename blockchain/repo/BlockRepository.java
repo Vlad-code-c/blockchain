@@ -1,28 +1,41 @@
 package blockchain.repo;
 
 import blockchain.Block;
-import blockchain.StringUtil;
+import persistence.SerializationUtils;
 
-import java.util.*;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Optional;
 
-public class BlockRepository {
+public class BlockRepository implements Serializable {
+
+    private static final long serialVersionUID = 111L;
+    private static BlockRepository instance;
+
 //    public Map<Block> blockchain = new HashMap();
-    public ArrayList<Block> blockchain = new ArrayList<>();
+    private ArrayList<Block> blockchain = new ArrayList<>();
 
-    public Block add(Block block) {
-        block.setId(blockchain.size());
+    private BlockRepository() {}
 
-        if (blockchain.size() == 0)
-            block.setPrevHash("0");
-        else{
-            Block prevBlock = blockchain.get(blockchain.size() - 1);
-            block.setPrevHash(prevBlock.generateHash());
-        }
+    public static BlockRepository getInstance() {
+        if (instance == null)
+            instance = new BlockRepository();
 
-        block.setHash(block.generateHash());
+        return instance;
+    }
 
+    public int getSize() {
+        return blockchain.size();
+    }
+
+    public Optional<Block> getLast() {
+        if (blockchain.isEmpty()) return Optional.empty();
+        return Optional.of(blockchain.get(blockchain.size() - 1));
+    }
+
+    public void add(Block block) {
         blockchain.add(block);
-        return block;
     }
 
     public Optional<Block> getById(int id) {
@@ -41,6 +54,33 @@ public class BlockRepository {
         }
 
         return true;
+    }
+
+    private String getSerializationFileName() {
+        return this.getClass().getName() + "_" + serialVersionUID;
+    }
+
+    public boolean serialize() {
+        try {
+            SerializationUtils.serialize(this, getSerializationFileName());
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deserialize() {
+        try {
+            BlockRepository blockRepo = (BlockRepository) SerializationUtils.deserialize(getSerializationFileName());
+            this.blockchain = blockRepo.blockchain;
+
+            boolean b = validateAll();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 
