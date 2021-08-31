@@ -2,10 +2,11 @@ package blockchain;
 
 import blockchain.repo.BlockRepository;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 
-public class Block {
+public class Block implements Serializable {
     private long id;
     private long timeStamp;
     private String prevHash;
@@ -61,10 +62,11 @@ public class Block {
         return String.format("Block:\n" +
                         "Id: %d\n" +
                         "Timestamp: %d\n" +
+                        "Magic number: %d\n" +
                         "Hash of the previous block:\n%s\n" +
                         "Hash of the block:\n%s\n" +
                         "Block was generating for %d seconds",
-                this.id, this.timeStamp, this.prevHash,
+                this.id, this.timeStamp, this.magicNum, this.prevHash,
                 this.hash, this.generationTime);
     }
 

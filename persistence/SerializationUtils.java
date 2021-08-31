@@ -1,9 +1,11 @@
 package persistence;
 
+import blockchain.repo.BlockRepository;
+
 import java.io.*;
 
 public class SerializationUtils {
-    public static void serialize(Object object, String fileName) throws IOException {
+    public static void serialize(BlockRepository object, String fileName) throws IOException {
         FileOutputStream fos = new FileOutputStream(fileName);
         BufferedOutputStream bos = new BufferedOutputStream(fos);
         ObjectOutputStream oos = new ObjectOutputStream(bos);

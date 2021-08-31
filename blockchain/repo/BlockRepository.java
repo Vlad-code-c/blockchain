@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class BlockRepository implements Serializable {
 
-    private static final long serialVersionUID = 111L;
+    private static final long serialVersionUID = 116L;
     private static BlockRepository instance;
 
 //    public Map<Block> blockchain = new HashMap();
@@ -36,8 +36,11 @@ public class BlockRepository implements Serializable {
 
     public void add(Block block) {
         blockchain.add(block);
-    }
 
+        //TODO: Serialize one by one
+        serialize();
+    }
+//1630404290153
     public Optional<Block> getById(int id) {
         return blockchain.stream().filter(block -> block.getId() == id).findFirst();
     }
@@ -77,7 +80,7 @@ public class BlockRepository implements Serializable {
 
             boolean b = validateAll();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         return false;
