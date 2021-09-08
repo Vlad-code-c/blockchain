@@ -1,5 +1,8 @@
 package miner;
 
+import blockchain.repo.BlockRepository;
+import log.Logger;
+
 public class MinerWorker extends Thread {
     private final Miner miner;
 
@@ -10,7 +13,7 @@ public class MinerWorker extends Thread {
 
     @Override
     public void run() {
-        while (miner.getValue() <= 10) {
+        while (BlockRepository.getInstance().getSize() < 5) {
             miner.generateNext();
         }
     }

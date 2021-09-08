@@ -29,7 +29,7 @@ public class BlockRepository implements Serializable {
         return blockchain.size();
     }
 
-    public Optional<Block> getLast() {
+    public synchronized Optional<Block> getLast() {
         if (blockchain.isEmpty()) return Optional.empty();
         return Optional.of(blockchain.get(blockchain.size() - 1));
     }
@@ -42,7 +42,7 @@ public class BlockRepository implements Serializable {
 
             blockchain.add(block);
 
-            regulateNumberOfZero(block.getGenerationTime());
+            regulateNumberOfZero(block);
 
             //TODO: Serialize one by one
             serialize();
@@ -52,11 +52,13 @@ public class BlockRepository implements Serializable {
     }
 
 
-    private void regulateNumberOfZero(int seconds) {
-        if (seconds <= 0) {
+    private void regulateNumberOfZero(Block block) {
+        if (block.getGenerationTime() <= 0) {
             numOfZero++;
-        } else if (seconds >= 60) {
+            block.setNumOfZeroInfo("N was increased to " + numOfZero);
+        } else if (block.getGenerationTime() >= 60) {
             numOfZero--;
+            block.setNumOfZeroInfo("N was decreased by 1");
         }
     }
 

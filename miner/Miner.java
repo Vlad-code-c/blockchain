@@ -2,24 +2,33 @@ package miner;
 
 import blockchain.Block;
 import blockchain.repo.BlockRepository;
+import log.Logger;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 
 public class Miner {
     private static final BlockRepository blockRepository = BlockRepository.getInstance();
     private static final Random random = new Random();
+    private static long lastId = 0;
 
     private long id;
-    private double value;
+//    private double value;
 
 
     public Miner(long id) {
         this.id = id;
+        lastId = id + 1;
+    }
+    public Miner () {
+        this.id = getLastId();
+        lastId++;
     }
 
     public Block generateNext() {
         final Block block = new Block();
+        block.setMinerId(id);
 
         block.setId(blockRepository.getSize());
 
@@ -32,6 +41,13 @@ public class Miner {
 
         while (!checkIfHaveNumbersOfZero(block)){
             block.setMagicNum(generateNextMagicalNum());
+
+            Optional<Block> last = blockRepository.getLast();
+            if (last.isPresent()) {
+                if (!last.get().getHash().equals(block.getPrevHash())){
+                    return generateNext();
+                }
+            }
         }
         block.setGenerationTime(
                 (int) ((new Date().getTime() - block.getTimeStamp()) / 1000));
@@ -39,11 +55,11 @@ public class Miner {
         try {
             blockRepository.add(block);
             block.show();
-            value++;
+//            value++;
 
             return block;
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return null;
         }
     }
@@ -68,11 +84,15 @@ public class Miner {
         this.id = id;
     }
 
-    public double getValue() {
-        return value;
-    }
+//    public double getValue() {
+//        return value;
+//    }
+//
+//    public void setValue(double value) {
+//        this.value = value;
+//    }
 
-    public void setValue(double value) {
-        this.value = value;
+    public static long getLastId() {
+        return lastId;
     }
 }

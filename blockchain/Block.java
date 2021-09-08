@@ -11,57 +11,14 @@ public class Block implements Serializable {
     private int magicNum;
     private int generationTime;
     private long minerId;
-
+    private String numOfZeroInfo = "N stay the same";
 
     private static int numbersOfZero = 5;
-
-
-//    private static final BlockRepository blockRepository = BlockRepository.getInstance();
-//    private static final Random random = new Random();
 
     public Block() {
         this.timeStamp = new Date().getTime();
     }
 
-//    public static Block generateNext() {
-//        final Block block = new Block();
-//
-//        block.setId(blockRepository.getSize());
-//
-//        blockRepository.getLast().ifPresentOrElse(
-//                (lastBlock) -> block.setPrevHash(lastBlock.getHash()),
-//                () -> block.setPrevHash("0")
-//        );
-//
-//        block.setHash(block.generateHash());
-//
-//        while (!block.checkIfHaveNumbersOfZero()){
-//            block.generateNextMagicalNum();
-//        }
-//        block.setGenerationTime(
-//                (int) ((new Date().getTime() - block.timeStamp) / 1000));
-//
-//        try {
-//            blockRepository.add(block);
-//            return block;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-
-//    public boolean checkIfHaveNumbersOfZero() {
-//        this.hash = generateHash();
-//        return hash.matches("0{" + numbersOfZero + "}\\w*");
-//    }
-//
-//    public void generateNextMagicalNum() {
-//        magicNum = random.nextInt();
-//    }
-
-//    public static boolean validateAll() {
-//        return blockRepository.validateAll();
-//    }
 
     public String toString() {
         return String.format("Block:\n" +
@@ -71,10 +28,11 @@ public class Block implements Serializable {
                         "Magic number: %d\n" +
                         "Hash of the previous block:\n%s\n" +
                         "Hash of the block:\n%s\n" +
-                        "Block was generating for %d seconds",
+                        "Block was generating for %d seconds\n" +
+                        "%s",
                 this.minerId,
                 this.id, this.timeStamp, this.magicNum, this.prevHash,
-                this.hash, this.generationTime);
+                this.hash, this.generationTime, this.numOfZeroInfo);
     }
 
 
@@ -86,7 +44,6 @@ public class Block implements Serializable {
         return StringUtil.applySha256(
                 "" + this.id + this.timeStamp + this.prevHash + this.magicNum);
     }
-
 
     public long getId() {
         return id;
@@ -150,5 +107,13 @@ public class Block implements Serializable {
 
     public static void setNumbersOfZero(int numbersOfZero) {
         Block.numbersOfZero = numbersOfZero;
+    }
+
+    public String getNumOfZeroInfo() {
+        return numOfZeroInfo;
+    }
+
+    public void setNumOfZeroInfo(String numOfZeroInfo) {
+        this.numOfZeroInfo = numOfZeroInfo;
     }
 }
