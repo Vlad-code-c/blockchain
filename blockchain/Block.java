@@ -1,7 +1,13 @@
 package blockchain;
 
+import entity.Message;
+import log.Logger;
+import persistence.MessageStorage;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Block implements Serializable {
     private long id;
@@ -12,13 +18,15 @@ public class Block implements Serializable {
     private int generationTime;
     private long minerId;
     private String numOfZeroInfo = "N stay the same";
+    private List<Message> messages;
+    private long prevTimeStamp = 0;
 
-    private static int numbersOfZero = 5;
+//    private static int numbersOfZero = 5;
 
     public Block() {
         this.timeStamp = new Date().getTime();
+        messages = MessageStorage.getMessages(prevTimeStamp);
     }
-
 
     public String toString() {
         return String.format("Block:\n" +
@@ -28,11 +36,13 @@ public class Block implements Serializable {
                         "Magic number: %d\n" +
                         "Hash of the previous block:\n%s\n" +
                         "Hash of the block:\n%s\n" +
+                        "Block data: %s\n" +
                         "Block was generating for %d seconds\n" +
                         "%s",
                 this.minerId,
                 this.id, this.timeStamp, this.magicNum, this.prevHash,
-                this.hash, this.generationTime, this.numOfZeroInfo);
+                this.hash, MessageStorage.getInstance().toString(), this.generationTime,
+                this.numOfZeroInfo);
     }
 
 
@@ -101,13 +111,21 @@ public class Block implements Serializable {
         this.minerId = minerId;
     }
 
-    public static int getNumbersOfZero() {
-        return numbersOfZero;
+    public long getPrevTimeStamp() {
+        return prevTimeStamp;
     }
 
-    public static void setNumbersOfZero(int numbersOfZero) {
-        Block.numbersOfZero = numbersOfZero;
+    public void setPrevTimeStamp(long prevTimeStamp) {
+        this.prevTimeStamp = prevTimeStamp;
     }
+
+    //    public static int getNumbersOfZero() {
+//        return numbersOfZero;
+//    }
+//
+//    public static void setNumbersOfZero(int numbersOfZero) {
+//        Block.numbersOfZero = numbersOfZero;
+//    }
 
     public String getNumOfZeroInfo() {
         return numOfZeroInfo;
@@ -116,4 +134,5 @@ public class Block implements Serializable {
     public void setNumOfZeroInfo(String numOfZeroInfo) {
         this.numOfZeroInfo = numOfZeroInfo;
     }
+
 }

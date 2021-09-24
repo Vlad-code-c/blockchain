@@ -1,8 +1,7 @@
 package miner;
 
 import blockchain.Block;
-import blockchain.repo.BlockRepository;
-import log.Logger;
+import repo.BlockRepository;
 
 import java.util.Date;
 import java.util.Optional;
@@ -11,7 +10,7 @@ import java.util.Random;
 public class Miner {
     private static final BlockRepository blockRepository = BlockRepository.getInstance();
     private static final Random random = new Random();
-    private static long lastId = 0;
+    private static long lastId;
 
     private long id;
 //    private double value;
@@ -21,6 +20,7 @@ public class Miner {
         this.id = id;
         lastId = id + 1;
     }
+
     public Miner () {
         this.id = getLastId();
         lastId++;
@@ -28,12 +28,17 @@ public class Miner {
 
     public Block generateNext() {
         final Block block = new Block();
+
+
         block.setMinerId(id);
 
         block.setId(blockRepository.getSize());
 
         blockRepository.getLast().ifPresentOrElse(
-                (lastBlock) -> block.setPrevHash(lastBlock.getHash()),
+                (lastBlock) -> {
+                    block.setPrevHash(lastBlock.getHash());
+                    block.setPrevTimeStamp(lastBlock.getTimeStamp());
+                },
                 () -> block.setPrevHash("0")
         );
 

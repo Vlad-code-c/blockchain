@@ -1,6 +1,6 @@
 package persistence;
 
-import blockchain.repo.BlockRepository;
+import repo.BlockRepository;
 
 import java.io.*;
 

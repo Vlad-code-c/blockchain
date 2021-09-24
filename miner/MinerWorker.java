@@ -1,10 +1,14 @@
 package miner;
 
-import blockchain.repo.BlockRepository;
-import log.Logger;
+import repo.BlockRepository;
 
 public class MinerWorker extends Thread {
     private final Miner miner;
+
+    public MinerWorker(long minerId) {
+        this.miner = new Miner(minerId);
+        Thread.currentThread().setName("thread-miner-" + miner.getId());
+    }
 
     public MinerWorker(Miner miner) {
         this.miner = miner;
