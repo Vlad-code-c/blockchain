@@ -1,4 +1,4 @@
-package blockchain.repo;
+package repo;
 
 import blockchain.Block;
 import persistence.SerializationUtils;
